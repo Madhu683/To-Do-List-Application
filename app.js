@@ -55,6 +55,28 @@ app.get('/todos/:id',(req,res)=>{
     console.log(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
 
 })
+
+//Update an existing to-do by its ID
+app.put('/todos/:id',(req,res)=>{
+
+    const id = parseInt(req.params.id)
+    const todo = todos.find(t => t.id === id)
+
+    //Id is not found
+    if(!todo)
+    {
+        return res.status(404).send(`<h2>${id} is not found</h2>`)
+    }
+
+    const {title,description,completed} = req.body;
+
+    if(title) todo.title = title
+    if(description) todo.description = description
+    if(typeof completed !=='undefined' ) todo.completed = completed
+     
+    res.status(200).json(todo)
+    console.log(`Updated`)
+})
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
 })
