@@ -79,6 +79,22 @@ app.put('/todos/:id',(req,res)=>{
 });
 
 
+//Delete a to-do by its ID
+app.delete('/todos/:id',(req,res)=>{
+    const id = parseInt(req.params.id)
+    const todo = todos.find(t => t.id === id)
+
+    if(!todo) {
+        return res.status(404).send(`<h2>${id} is not found</h2>`)
+    }
+    
+    // Filter the todos array to exclude the to-do with the given ID
+    todos = todos.filter(t => t.id !== id)
+    res.status(200).send('Deleted')
+    console.log('Deleted')
+})
+
+
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
 })
