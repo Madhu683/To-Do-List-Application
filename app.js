@@ -33,18 +33,27 @@ app.post('/todos',(req,res)=>{
     res.status(201).json(todos)
 })
 
+// Fetch all to-dos
 app.get('/todos',(req,res)=>{
-    //res.send('Todos')
-    //console.log('Todos')
-
     let todosString = ''
     for(let i = 0;i<todos.length;i++)
         todosString+=`<h3>ID:${todos[i].id} Title: ${todos[i].title} Description: ${todos[i].description}</h3>`
   
     console.log(todosString)
     res.send(todosString)
-    
-  // res.json(todos)
+})
+
+// Fetch a single to-do by its ID
+app.get('/todos/:id',(req,res)=>{
+    const id = parseInt(req.params.id); // Parsing params id into integer
+    const todo = todos.find(t=>t.id === id )  //fetching mentioned id record from todos
+    if(!todo)
+    {
+        return res.status(404).send(`<h2>${id} is not found</h2>`)
+    }
+    res.send(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
+    console.log(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
+
 })
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
