@@ -27,13 +27,20 @@ app.post('/todos',(req,res)=>{
         return res.status(401).send('Invalid title')
     }
 
-    //Validate that the isCompleted field is a boolean
-    if( completed !== undefined || typeof completed !=='boolean')
+    //Validate that the Completed field is a boolean
+    if( completed === undefined || typeof completed !== 'boolean')
     {
         console.log('Completed field should be boolean')
         return res.status(401).send('Completed field should be boolean')
     }
-
+    
+    //Ensure the title has a maximum length of 100 characters.
+    if(title.length>100)
+    {
+            console.log("Title should less than 100 characters")
+           return res.status(402).send('Title should less than 100 characters')
+    }
+    
     console.log(req.body)
     const newtodo = {
         id:todos.length + 1,
