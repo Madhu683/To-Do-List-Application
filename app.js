@@ -19,6 +19,21 @@ let todos = [
 // creating a new todo
 app.post('/todos',(req,res)=>{
     const {title,description,completed} = req.body
+
+    //Ensure that the title field is required and is a string
+    if(!title || typeof title !== 'string')
+    {
+        console.log('Inavlid title')
+        return res.status(401).send('Invalid title')
+    }
+
+    //Validate that the isCompleted field is a boolean
+    if( completed !== undefined || typeof completed !=='boolean')
+    {
+        console.log('Completed field should be boolean')
+        return res.status(401).send('Completed field should be boolean')
+    }
+
     console.log(req.body)
     const newtodo = {
         id:todos.length + 1,
