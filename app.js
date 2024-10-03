@@ -16,6 +16,7 @@ let todos = [
     }
 ]
 
+
 // creating a new todo
 app.post('/todos',(req,res)=>{
     const {title,description,completed} = req.body
@@ -116,7 +117,6 @@ app.put('/todos/:id',(req,res)=>{
     todo.title = title;
     todo.description = description;
     todo.completed = completed;
-    
     res.status(200).send("Updated");
     console.log(`Updated`);
 });
