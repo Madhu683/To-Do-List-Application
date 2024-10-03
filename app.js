@@ -94,7 +94,10 @@ app.delete('/todos/:id',(req,res)=>{
     console.log('Deleted')
 })
 
-
+//If url is not found
+app.get('*',(req,res)=>{
+    res.status(404).send(`<h4>Resource not found</h4>`)
+})
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
 })
