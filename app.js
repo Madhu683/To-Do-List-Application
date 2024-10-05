@@ -89,15 +89,22 @@ app.get('/todos',(req,res,next)=>{
 })
 
 // Fetch a single to-do by its ID
-app.get('/todos/:id',(req,res)=>{
+app.get('/todos/:id',(req,res,next)=>{
+    try{
     const id = parseInt(req.params.id); // Parsing params id into integer
     const todo = todos.find(t=>t.id === id )  //fetching mentioned id record from todos
     if(!todo)
     {
         //return res.status(404).send(`<h2>${id} is not found</h2>`)
+        throw new CustomError(`Todo with id${id} not found`)
     }
     res.send(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
     console.log(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
+    }
+    catch(error)
+    {
+        next(error) //pass the error to the error handling middleware
+    }
 
 })
 
