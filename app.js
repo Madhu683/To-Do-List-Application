@@ -139,8 +139,20 @@ app.delete('/todos/:id',(req,res)=>{
 
 //If url is not found
 app.get('*',(req,res)=>{
-    res.status(404).send(`<h4>Resource not found</h4>`)
+    res.status(404).send(`Resource not found</h4>`)
 })
+
+//Error-handling middleware
+app.use((err,req,res,next)=>{
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        success:false,
+        message:err.message || "Internal Server Error"
+    })
+})
+
+
+
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
 })
