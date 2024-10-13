@@ -96,7 +96,7 @@ app.get('/todos/:id',(req,res,next)=>{
     if(!todo)
     {
         //return res.status(404).send(`<h2>${id} is not found</h2>`)
-        throw new CustomError(`Todo with id${id} not found`)
+        throw new CustomError(`Todo with id${id} not found`,404)
     }
     res.send(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
     console.log(`<h3>ID:${todo.id} Title: ${todo.title} Description: ${todo.description}</h3>`)
@@ -110,6 +110,7 @@ app.get('/todos/:id',(req,res,next)=>{
 
 //updating existing todo
 app.put('/todos/:id',(req,res)=>{
+    try{
     console.log("Request headers:", req.headers); // Log headers to check Content-Type
     console.log("Request body:", req.body);       // Log request body
 
@@ -117,7 +118,8 @@ app.put('/todos/:id',(req,res)=>{
     const todo = todos.find(t => t.id === id)
 
     if(!todo) {
-        return res.status(404).send(`<h2>${id} is not found</h2>`)
+        //return res.status(404).send(`<h2>${id} is not found</h2>`)
+        throw new CustomError(`Todo with id${id} not found`,404)
     }
 
     const {title, description, completed} = req.body;
@@ -125,22 +127,25 @@ app.put('/todos/:id',(req,res)=>{
     //Ensure that the title field is required and is a string
     if(!title || typeof title !== 'string')
     {
-        console.log('Inavlid title')
-        return res.status(401).send('Invalid title')
+        console.log('Invalid Title. This is required and must be a string')
+        throw new CustomError('Invalid Title. This is required and must be a string',400);
     }
 
     //Validate that the Completed field is a boolean
     if( completed === undefined || typeof completed !== 'boolean')
     {
         console.log('Completed field should be boolean')
-        return res.status(401).send('Completed field should be boolean')
+        //return res.status(401).send('Completed field should be boolean')
+        throw new CustomError('Completed field should be boolean',400);
     }
     
     //Ensure the title has a maximum length of 100 characters.
     if(title.length>100)
     {
             console.log("Title should less than 100 characters")
-            return res.status(402).send('Title should less than 100 characters')
+            throw new CustomError('Title should less than 100 characters',400);
+            //return res.status(402).send('Title should less than 100 characters')
+
     }
      
     todo.title = title;
@@ -148,27 +153,39 @@ app.put('/todos/:id',(req,res)=>{
     todo.completed = completed;
     res.status(200).send("Updated");
     console.log(`Updated`);
+    }
+    catch(error)
+    {
+        next(error) //Pass the error to the eroor-handling middleware
+    }
 });
 
 
 //Delete a to-do by its ID
 app.delete('/todos/:id',(req,res)=>{
+    try{
     const id = parseInt(req.params.id)
     const todo = todos.find(t => t.id === id)
 
     if(!todo) {
-        return res.status(404).send(`<h2>${id} is not found</h2>`)
+        //return res.status(404).send(`<h2>${id} is not found</h2>`)
+        console.log(`${id} is not found`);
+        throw new CustomError(`${id} is not found`,404);
     }
     
     // Filter the todos array to exclude the to-do with the given ID
     todos = todos.filter(t => t.id !== id)
     res.status(200).send('Deleted')
     console.log('Deleted')
+    }catch(err)
+    {
+        next(err); //Pass the error to error handling middleware.
+    }
 })
 
 //If url is not found
 app.get('*',(req,res)=>{
-    res.status(404).send(`Resource not found</h4>`)
+    res.status(404).send(`Resource not found`)
 })
 
 //Error-handling middleware
