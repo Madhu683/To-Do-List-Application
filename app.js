@@ -1,20 +1,21 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const mongoose = require('mongoose');
+const taskRouter = require('./routes/taskRouter');
+const app = express();
+
+//Middleware to parse JSON
 app.use(express.json());
 
-let todos = [
-    {
-    id:1,
-    title: 'Create a method',
-    description: ' Create a method to perform add operation in that function',
-    completed: 'false'
-    },
-    {id:2,
-        title: 'Create a method',
-        description: ' Create a method to perform add operation in that function',
-        completed: 'false'
-    }
-]
+const uri = "mongodb+srv://madhukandukuri419:PGqZjrKATVLRUEJd@cluster0.n9hfz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+//Conection of MongoDB
+mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true })
+                 .then(()=>console.log('MongoDB is connected successfully'))
+                 .catch((err)=>console.log('MongoDB connection is failed:',err))
+
+
+//Middleware to use routers
+app.use('/',taskRouter)
 
 //If url is not found
 app.get('*',(req,res)=>{
