@@ -19,6 +19,28 @@ let todos = [
 // creating a new todo
 app.post('/todos',(req,res)=>{
     const {title,description,completed} = req.body
+
+    //Ensure that the title field is required and is a string
+    if(!title || typeof title !== 'string')
+    {
+        console.log('Inavlid title')
+        return res.status(401).send('Invalid title')
+    }
+
+    //Validate that the Completed field is a boolean
+    if( completed === undefined || typeof completed !== 'boolean')
+    {
+        console.log('Completed field should be boolean')
+        return res.status(401).send('Completed field should be boolean')
+    }
+    
+    //Ensure the title has a maximum length of 100 characters.
+    if(title.length>100)
+    {
+            console.log("Title should less than 100 characters")
+           return res.status(402).send('Title should less than 100 characters')
+    }
+    
     console.log(req.body)
     const newtodo = {
         id:todos.length + 1,
@@ -70,11 +92,32 @@ app.put('/todos/:id',(req,res)=>{
 
     const {title, description, completed} = req.body;
 
-    if(title) todo.title = title;
-    if(description) todo.description = description;
-    if(typeof completed !== 'undefined') todo.completed = completed;
+    //Ensure that the title field is required and is a string
+    if(!title || typeof title !== 'string')
+    {
+        console.log('Inavlid title')
+        return res.status(401).send('Invalid title')
+    }
 
-    res.status(200).json(todo);
+    //Validate that the Completed field is a boolean
+    if( completed === undefined || typeof completed !== 'boolean')
+    {
+        console.log('Completed field should be boolean')
+        return res.status(401).send('Completed field should be boolean')
+    }
+    
+    //Ensure the title has a maximum length of 100 characters.
+    if(title.length>100)
+    {
+            console.log("Title should less than 100 characters")
+            return res.status(402).send('Title should less than 100 characters')
+    }
+     
+    todo.title = title;
+    todo.description = description;
+    todo.completed = completed;
+    
+    res.status(200).send("Updated");
     console.log(`Updated`);
 });
 
@@ -94,7 +137,10 @@ app.delete('/todos/:id',(req,res)=>{
     console.log('Deleted')
 })
 
-
+//If url is not found
+app.get('*',(req,res)=>{
+    res.status(404).send(`<h4>Resource not found</h4>`)
+})
 app.listen(5000,()=>{
     console.log('Server is listening on port 5000...')
 })
